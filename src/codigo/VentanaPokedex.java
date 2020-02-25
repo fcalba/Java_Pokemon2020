@@ -332,7 +332,7 @@ public class VentanaPokedex extends javax.swing.JFrame {
         nombrehabilidad.setForeground(new java.awt.Color(255, 255, 255));
         nombrehabilidad.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         getContentPane().add(nombrehabilidad);
-        nombrehabilidad.setBounds(800, 270, 80, 30);
+        nombrehabilidad.setBounds(760, 270, 130, 30);
 
         fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pokedex2.jpg"))); // NOI18N
         getContentPane().add(fondo);
@@ -342,9 +342,9 @@ public class VentanaPokedex extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void botonDerechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonDerechaActionPerformed
-        dibujaElPokemonQueEstaEnLaPosicion(contador);
+        dibujaElPokemonQueEstaEnLaPosicion(contador-1);
         
-        Pokemon p = listaPokemons.get(String.valueOf(contador+1));
+        Pokemon p = listaPokemons.get(String.valueOf(contador));
         if(p != null){
             nombrePokemon.setText(p.nombre);
             nombreuno.setText(p.movimiento1);
@@ -423,8 +423,8 @@ public class VentanaPokedex extends javax.swing.JFrame {
         }
         
          contador++;
-        if (contador >= 649) {
-            contador = 649;
+        if (contador >= 151) {
+            contador = 151;
         }
     }//GEN-LAST:event_botonIzquierdaActionPerformed
 
