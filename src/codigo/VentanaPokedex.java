@@ -5,17 +5,108 @@
  */
 package codigo;
 
+import java.sql.Connection;
+import java.sql.Statement;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import javax.imageio.ImageIO;
+
 /**
  *
  * @author xp
  */
 public class VentanaPokedex extends javax.swing.JFrame {
 
+    BufferedImage buffer1 = null;
+    Image imagen1 = null;
+    int contador = 0;
+
+    Statement estado;
+    ResultSet resultadoConsulta;
+    Connection conexion;
+
+    //ESTRUCTURA PARA GUARDAR TODO EL CONTENIDO DE LA BASE DE DATOS DE GOLPE
+    HashMap<String, Pokemon> listaPokemons = new HashMap();
+
+    @Override
+    public void paint(Graphics g) {
+        super.paintComponents(g);
+        Graphics2D g2 = (Graphics2D) imagenPokemon.getGraphics();
+        g2.drawImage(buffer1, 0, 0, imagenPokemon.getWidth(), imagenPokemon.getHeight(), null);
+
+    }
+
     /**
      * Creates new form VentanaPokedex
      */
     public VentanaPokedex() {
         initComponents();
+         setSize(940, 680);
+        try {
+            imagen1 = ImageIO.read(getClass().getResource("/imagenes/black-white.png"));
+        } catch (IOException ex) {
+        }
+
+        buffer1 = (BufferedImage) imagenPokemon.createImage(imagenPokemon.getWidth(), imagenPokemon.getHeight());
+        Graphics2D g2 = buffer1.createGraphics();
+
+        dibujaElPokemonQueEstaEnLaPosicion(30);
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conexion = DriverManager.getConnection("jdbc:mysql://127.0.0.1/test",
+                            "root",
+                            "");
+            estado = (Statement) conexion.createStatement();
+            resultadoConsulta = estado.executeQuery("Select * from pokemon");
+            //recorremos el array del resultado uno a uno 
+            //para ir cargandolo en el hashmap
+
+            while (resultadoConsulta.next()) {
+                Pokemon p = new Pokemon();
+                p.nombre = resultadoConsulta.getString("nombre");
+                p.especie = resultadoConsulta.getString("especie");
+                p.habilidad = resultadoConsulta.getString("habilidad");
+                p.habitat = resultadoConsulta.getString("habitat");
+                p.altura = resultadoConsulta.getString("altura");
+                p.tipo1 = resultadoConsulta.getString("tipo1");
+                p.tipo2 = resultadoConsulta.getString("tipo2");
+                p.movimiento1 = resultadoConsulta.getString("movimiento1");
+                p.movimiento2 = resultadoConsulta.getString("movimiento2");
+                p.movimiento3 = resultadoConsulta.getString("movimiento3");
+                p.peso = resultadoConsulta.getString("peso");
+                p.descripcion = resultadoConsulta.getString("descripcion");
+                p.preEvolucion = resultadoConsulta.getString("preEvolucion");
+                p.posEvolucion = resultadoConsulta.getString("posEvolucion");
+
+                //añado el pokemon recien creado al Hashmap
+                listaPokemons.put(resultadoConsulta.getString("id"), p);
+
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("hay un error");
+        }
+
+    }
+
+    private void dibujaElPokemonQueEstaEnLaPosicion(int posicion) {
+        int fila = posicion / 31;
+        int columna = posicion % 31;
+        Graphics2D g2 = (Graphics2D) buffer1.getGraphics();
+        g2.setColor(Color.black);
+        g2.fillRect(0, 0, imagenPokemon.getWidth(), imagenPokemon.getHeight());//PINTA EL FONDO DEL JPANEL NEGRO
+        g2.drawImage(imagen1, 0, 0, imagenPokemon.getWidth(), imagenPokemon.getHeight(),
+                columna * 96, fila * 96, columna * 96 + 96, fila * 96 + 96, null);
+        repaint();
     }
 
     /**
@@ -27,21 +118,315 @@ public class VentanaPokedex extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        imagenPokemon = new javax.swing.JPanel();
+        botonDerecha = new javax.swing.JButton();
+        botonIzquierda = new javax.swing.JButton();
+        nombrePokemon = new javax.swing.JLabel();
+        nombreuno = new javax.swing.JLabel();
+        nombretipo1 = new javax.swing.JLabel();
+        nombredescripcion = new javax.swing.JLabel();
+        nombrealtura = new javax.swing.JLabel();
+        nombrepeso = new javax.swing.JLabel();
+        altura = new javax.swing.JLabel();
+        peso = new javax.swing.JLabel();
+        uno = new javax.swing.JLabel();
+        dos = new javax.swing.JLabel();
+        moviminentos = new javax.swing.JLabel();
+        nombredos = new javax.swing.JLabel();
+        tres = new javax.swing.JLabel();
+        nombretres = new javax.swing.JLabel();
+        descripcion = new javax.swing.JLabel();
+        especie = new javax.swing.JLabel();
+        nombreespecie = new javax.swing.JLabel();
+        habita = new javax.swing.JLabel();
+        nombrehabita = new javax.swing.JLabel();
+        tipo1 = new javax.swing.JLabel();
+        tipo2 = new javax.swing.JLabel();
+        nombretipo2 = new javax.swing.JLabel();
+        PreEvolucion = new javax.swing.JLabel();
+        nombrepreEvolucion = new javax.swing.JLabel();
+        PosEvolucion = new javax.swing.JLabel();
+        nombreposEvolucion = new javax.swing.JLabel();
+        habilidad = new javax.swing.JLabel();
+        nombrehabilidad = new javax.swing.JLabel();
+        fondo = new javax.swing.JLabel();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(null);
+
+        javax.swing.GroupLayout imagenPokemonLayout = new javax.swing.GroupLayout(imagenPokemon);
+        imagenPokemon.setLayout(imagenPokemonLayout);
+        imagenPokemonLayout.setHorizontalGroup(
+            imagenPokemonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 270, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+        imagenPokemonLayout.setVerticalGroup(
+            imagenPokemonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 190, Short.MAX_VALUE)
         );
+
+        getContentPane().add(imagenPokemon);
+        imagenPokemon.setBounds(90, 240, 270, 190);
+
+        botonDerecha.setForeground(java.awt.Color.white);
+        botonDerecha.setText("<");
+        botonDerecha.setBorder(null);
+        botonDerecha.setBorderPainted(false);
+        botonDerecha.setContentAreaFilled(false);
+        botonDerecha.setFocusPainted(false);
+        botonDerecha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonDerechaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(botonDerecha);
+        botonDerecha.setBounds(300, 520, 50, 60);
+
+        botonIzquierda.setForeground(java.awt.Color.white);
+        botonIzquierda.setText(">");
+        botonIzquierda.setBorder(null);
+        botonIzquierda.setBorderPainted(false);
+        botonIzquierda.setContentAreaFilled(false);
+        botonIzquierda.setFocusPainted(false);
+        botonIzquierda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonIzquierdaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(botonIzquierda);
+        botonIzquierda.setBounds(370, 530, 50, 40);
+
+        nombrePokemon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombrePokemon);
+        nombrePokemon.setBounds(140, 550, 120, 50);
+
+        nombreuno.setForeground(new java.awt.Color(255, 255, 255));
+        nombreuno.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombreuno);
+        nombreuno.setBounds(525, 206, 130, 30);
+
+        nombretipo1.setForeground(new java.awt.Color(255, 255, 255));
+        nombretipo1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombretipo1);
+        nombretipo1.setBounds(530, 470, 90, 50);
+
+        nombredescripcion.setForeground(new java.awt.Color(255, 255, 255));
+        nombredescripcion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombredescripcion);
+        nombredescripcion.setBounds(535, 336, 340, 100);
+
+        nombrealtura.setForeground(new java.awt.Color(255, 255, 255));
+        nombrealtura.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombrealtura);
+        nombrealtura.setBounds(535, 560, 60, 40);
+
+        nombrepeso.setForeground(new java.awt.Color(255, 255, 255));
+        nombrepeso.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombrepeso);
+        nombrepeso.setBounds(620, 560, 60, 40);
+
+        altura.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        altura.setText("Altura");
+        getContentPane().add(altura);
+        altura.setBounds(530, 530, 60, 20);
+
+        peso.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        peso.setText("Peso");
+        getContentPane().add(peso);
+        peso.setBounds(630, 530, 50, 20);
+
+        uno.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        uno.setText("1");
+        getContentPane().add(uno);
+        uno.setBounds(500, 210, 30, 16);
+
+        dos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        dos.setText("2");
+        getContentPane().add(dos);
+        dos.setBounds(500, 250, 30, 20);
+
+        moviminentos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        moviminentos.setText("Movimientos");
+        getContentPane().add(moviminentos);
+        moviminentos.setBounds(540, 180, 90, 16);
+
+        nombredos.setForeground(new java.awt.Color(255, 255, 255));
+        nombredos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombredos);
+        nombredos.setBounds(525, 240, 130, 30);
+
+        tres.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tres.setText("3");
+        getContentPane().add(tres);
+        tres.setBounds(500, 290, 30, 20);
+
+        nombretres.setForeground(new java.awt.Color(255, 255, 255));
+        nombretres.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombretres);
+        nombretres.setBounds(530, 280, 120, 30);
+
+        descripcion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        descripcion.setText("Descripcion");
+        getContentPane().add(descripcion);
+        descripcion.setBounds(530, 310, 100, 30);
+
+        especie.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        especie.setText("Especie");
+        getContentPane().add(especie);
+        especie.setBounds(680, 180, 70, 20);
+
+        nombreespecie.setForeground(new java.awt.Color(255, 255, 255));
+        nombreespecie.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombreespecie);
+        nombreespecie.setBounds(660, 210, 120, 40);
+
+        habita.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        habita.setText("Habita");
+        getContentPane().add(habita);
+        habita.setBounds(810, 180, 50, 20);
+
+        nombrehabita.setForeground(new java.awt.Color(255, 255, 255));
+        nombrehabita.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombrehabita);
+        nombrehabita.setBounds(800, 206, 80, 40);
+
+        tipo1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tipo1.setText("Tipo1");
+        getContentPane().add(tipo1);
+        tipo1.setBounds(540, 440, 60, 20);
+
+        tipo2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tipo2.setText("Tipo2");
+        getContentPane().add(tipo2);
+        tipo2.setBounds(680, 440, 45, 20);
+
+        nombretipo2.setForeground(new java.awt.Color(255, 255, 255));
+        nombretipo2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombretipo2);
+        nombretipo2.setBounds(650, 466, 100, 50);
+
+        PreEvolucion.setText("PreEvolucion");
+        getContentPane().add(PreEvolucion);
+        PreEvolucion.setBounds(720, 530, 80, 16);
+
+        nombrepreEvolucion.setForeground(new java.awt.Color(255, 255, 255));
+        nombrepreEvolucion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombrepreEvolucion);
+        nombrepreEvolucion.setBounds(725, 556, 70, 50);
+
+        PosEvolucion.setText("PosEvolucion");
+        getContentPane().add(PosEvolucion);
+        PosEvolucion.setBounds(810, 530, 83, 16);
+
+        nombreposEvolucion.setForeground(new java.awt.Color(255, 255, 255));
+        nombreposEvolucion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombreposEvolucion);
+        nombreposEvolucion.setBounds(820, 560, 70, 40);
+
+        habilidad.setForeground(new java.awt.Color(51, 153, 255));
+        habilidad.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        habilidad.setText("Habilidad:");
+        getContentPane().add(habilidad);
+        habilidad.setBounds(690, 270, 70, 30);
+
+        nombrehabilidad.setForeground(new java.awt.Color(255, 255, 255));
+        nombrehabilidad.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(nombrehabilidad);
+        nombrehabilidad.setBounds(800, 270, 80, 30);
+
+        fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pokedex2.jpg"))); // NOI18N
+        getContentPane().add(fondo);
+        fondo.setBounds(0, 0, 940, 660);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void botonDerechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonDerechaActionPerformed
+        dibujaElPokemonQueEstaEnLaPosicion(contador);
+        
+        Pokemon p = listaPokemons.get(String.valueOf(contador+1));
+        if(p != null){
+            nombrePokemon.setText(p.nombre);
+            nombreuno.setText(p.movimiento1);
+            nombredos.setText(p.movimiento2);
+            nombretres.setText(p.movimiento3);
+            nombrehabilidad.setText(p.habilidad);
+            nombreespecie.setText(p.especie);
+            nombredescripcion.setText(p.descripcion);
+            nombretipo1.setText(p.tipo1);
+            nombretipo2.setText(p.tipo2);
+            nombrealtura.setText(p.altura);
+            nombrepeso.setText(p.peso);
+            nombrepreEvolucion.setText(p.preEvolucion);
+            nombreposEvolucion.setText(p.posEvolucion);
+            nombrehabita.setText(p.habitat);
+            
+        }
+        else{
+            nombrePokemon.setText("NO HAY DATOS");
+            nombreuno.setText("NO HAY DATOS");
+            nombredos.setText("NO HAY DATOS");
+            nombretres.setText("NO HAY DATOS");
+            nombrehabilidad.setText("NO HAY DATOS");
+            nombreespecie.setText("NO HAY DATOS");
+            nombredescripcion.setText("NO HAY DATOS");
+            nombretipo1.setText("NO HAY DATOS");
+            nombretipo2.setText("NO HAY DATOS");
+            nombrealtura.setText("NO HAY DATOS");
+            nombrepeso.setText("NO HAY DATOS");
+            nombrepreEvolucion.setText("NO HAY DATOS");
+            nombreposEvolucion.setText("NO HAY DATOS");
+            nombrehabita.setText("NO HAY DATOS");
+        }
+        
+        contador--;
+        if (contador <= 0) {
+            contador = 0;
+        }
+    }//GEN-LAST:event_botonDerechaActionPerformed
+
+    private void botonIzquierdaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonIzquierdaActionPerformed
+        dibujaElPokemonQueEstaEnLaPosicion(contador);
+    
+        Pokemon p = listaPokemons.get(String.valueOf(contador+1));
+        if(p != null){
+            nombrePokemon.setText(p.nombre);
+            nombreuno.setText(p.movimiento1);
+            nombredos.setText(p.movimiento2);
+            nombretres.setText(p.movimiento3);
+            nombrehabilidad.setText(p.habilidad);
+            nombreespecie.setText(p.especie);
+            nombredescripcion.setText(p.descripcion);
+            nombretipo1.setText(p.tipo1);
+            nombretipo2.setText(p.tipo2);
+            nombrealtura.setText(p.altura);
+            nombrepeso.setText(p.peso);
+            nombrepreEvolucion.setText(p.preEvolucion);
+            nombreposEvolucion.setText(p.posEvolucion);
+            nombrehabita.setText(p.habitat);
+        }
+        else{
+            nombrePokemon.setText("NO HAY DATOS");
+            nombreuno.setText("NO HAY DATOS");
+            nombredos.setText("NO HAY DATOS");
+            nombretres.setText("NO HAY DATOS");
+            nombrehabilidad.setText("NO HAY DATOS");
+            nombreespecie.setText("NO HAY DATOS");
+            nombredescripcion.setText("NO HAY DATOS");
+            nombretipo1.setText("NO HAY DATOS");
+            nombretipo2.setText("NO HAY DATOS");
+            nombrealtura.setText("NO HAY DATOS");
+            nombrepeso.setText("NO HAY DATOS");
+            nombrepreEvolucion.setText("NO HAY DATOS");
+            nombreposEvolucion.setText("NO HAY DATOS");
+            nombrehabita.setText("NO HAY DATOS");
+        }
+        
+         contador++;
+        if (contador >= 649) {
+            contador = 649;
+        }
+    }//GEN-LAST:event_botonIzquierdaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -79,5 +464,41 @@ public class VentanaPokedex extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel PosEvolucion;
+    private javax.swing.JLabel PreEvolucion;
+    private javax.swing.JLabel altura;
+    private javax.swing.JButton botonDerecha;
+    private javax.swing.JButton botonIzquierda;
+    private javax.swing.JLabel descripcion;
+    private javax.swing.JLabel dos;
+    private javax.swing.JLabel especie;
+    private javax.swing.JLabel fondo;
+    private javax.swing.JLabel habilidad;
+    private javax.swing.JLabel habita;
+    private javax.swing.JPanel imagenPokemon;
+    private javax.swing.JLabel moviminentos;
+    private javax.swing.JLabel nombrePokemon;
+    private javax.swing.JLabel nombrealtura;
+    private javax.swing.JLabel nombredescripcion;
+    private javax.swing.JLabel nombredos;
+    private javax.swing.JLabel nombreespecie;
+    private javax.swing.JLabel nombrehabilidad;
+    private javax.swing.JLabel nombrehabita;
+    private javax.swing.JLabel nombrepeso;
+    private javax.swing.JLabel nombreposEvolucion;
+    private javax.swing.JLabel nombrepreEvolucion;
+    private javax.swing.JLabel nombretipo1;
+    private javax.swing.JLabel nombretipo2;
+    private javax.swing.JLabel nombretres;
+    private javax.swing.JLabel nombreuno;
+    private javax.swing.JLabel peso;
+    private javax.swing.JLabel tipo1;
+    private javax.swing.JLabel tipo2;
+    private javax.swing.JLabel tres;
+    private javax.swing.JLabel uno;
     // End of variables declaration//GEN-END:variables
+
+    private void setExtendedState(String imagenspokedex2png) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
