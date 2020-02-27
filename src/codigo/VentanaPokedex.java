@@ -1,21 +1,98 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package codigo;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
- * @author xp
+ * @author alba
  */
 public class VentanaPokedex extends javax.swing.JFrame {
+
+    BufferedImage buffer1 = null;
+    Image imagen1 = null;
+    int contador = 1;
+
+    Statement estado;
+    ResultSet resultadoConsulta;
+    private Connection conexion;
+
+    @Override
+    public void paint(Graphics g) {
+        super.paintComponents(g);
+        Graphics2D g2 = (Graphics2D) jPanel2.getGraphics();
+        g2.drawImage(buffer1, 0, 0,
+                jPanel2.getWidth(),
+                jPanel2.getHeight(), null);
+    }
 
     /**
      * Creates new form VentanaPokedex
      */
+
     public VentanaPokedex() {
         initComponents();
+        setSize(940, 672);
+
+        try {
+            imagen1 = ImageIO.read(getClass()
+                    .getResource("/imagenes/black-white.png"));
+        } catch (IOException ex) {
+        }
+
+        buffer1 = (BufferedImage) jPanel2.createImage(
+                jPanel2.getWidth(),
+                jPanel2.getHeight());
+        Graphics2D g2 = buffer1.createGraphics();
+
+        dibujaElPokemonQueEstaEnLaPosicion(30);
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conexion = DriverManager
+                    .getConnection("jdbc:mysql://127.0.0.1/test",
+                            "root",
+                            "");
+            estado = conexion.createStatement();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("hay un error");
+        }
+
+    }
+
+    private void dibujaElPokemonQueEstaEnLaPosicion(int posicion) {
+        int fila = posicion / 31;
+        int columna = posicion % 31;
+        Graphics2D g2 = (Graphics2D) buffer1.getGraphics();
+        g2.setColor(Color.black);
+        g2.fillRect(0, 0, //pinta el fondo del jpanel negro
+                jPanel2.getWidth(),
+                jPanel2.getHeight());
+        g2.drawImage(imagen1,
+                0, //posicion X inicial dentro del jpanel 
+                0, // posicion Y inicial dentro del jpanel
+                jPanel2.getWidth(), //ancho del jpanel
+                jPanel2.getHeight(), //alto del jpanel
+                columna * 96, //posicion inicial X dentro de la imagen de todos los pokemon
+                fila * 96, //posicion inicial Y dentro de la imagen de todos los pokemon
+                columna * 96 + 96, //posicion final X
+                fila * 96 + 96, //posicion final Y
+                null //si no lo pones no va
+        );
+        repaint();
     }
 
     /**
@@ -27,21 +104,207 @@ public class VentanaPokedex extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jPanel2 = new javax.swing.JPanel();
+        botonizquierda = new javax.swing.JButton();
+        botonderecha = new javax.swing.JButton();
+        nombrePokemon = new javax.swing.JLabel();
+        nombrealtura = new javax.swing.JLabel();
+        nombrepeso = new javax.swing.JLabel();
+        altura = new javax.swing.JLabel();
+        peso = new javax.swing.JLabel();
+        tipo1 = new javax.swing.JLabel();
+        tipo2 = new javax.swing.JLabel();
+        nombretipo1 = new javax.swing.JLabel();
+        nombretipo2 = new javax.swing.JLabel();
+        preEvolucion = new javax.swing.JLabel();
+        posEvolucion = new javax.swing.JLabel();
+        nombrePre = new javax.swing.JLabel();
+        nombrePos = new javax.swing.JLabel();
+        movimientos = new javax.swing.JLabel();
+        uno = new javax.swing.JLabel();
+        dos = new javax.swing.JLabel();
+        tres = new javax.swing.JLabel();
+        nombreuno = new javax.swing.JLabel();
+        nombredos = new javax.swing.JLabel();
+        nombretres = new javax.swing.JLabel();
+        nombredescripcion = new javax.swing.JLabel();
+        descripcion = new javax.swing.JLabel();
+        fondo = new javax.swing.JLabel();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(null);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 270, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 180, Short.MAX_VALUE)
         );
+
+        getContentPane().add(jPanel2);
+        jPanel2.setBounds(90, 240, 270, 180);
+
+        botonizquierda.setText("<");
+        botonizquierda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonizquierdaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(botonizquierda);
+        botonizquierda.setBounds(320, 530, 45, 29);
+
+        botonderecha.setText(">");
+        botonderecha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonderechaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(botonderecha);
+        botonderecha.setBounds(360, 530, 44, 29);
+        getContentPane().add(nombrePokemon);
+        nombrePokemon.setBounds(137, 542, 130, 60);
+
+        nombrealtura.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombrealtura);
+        nombrealtura.setBounds(530, 556, 70, 40);
+
+        nombrepeso.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombrepeso);
+        nombrepeso.setBounds(615, 556, 70, 40);
+
+        altura.setText("altura");
+        getContentPane().add(altura);
+        altura.setBounds(530, 530, 36, 16);
+
+        peso.setText("peso");
+        getContentPane().add(peso);
+        peso.setBounds(640, 530, 30, 16);
+
+        tipo1.setText("tipo1");
+        getContentPane().add(tipo1);
+        tipo1.setBounds(730, 530, 33, 16);
+
+        tipo2.setText("tipo2");
+        getContentPane().add(tipo2);
+        tipo2.setBounds(820, 530, 33, 16);
+
+        nombretipo1.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombretipo1);
+        nombretipo1.setBounds(730, 556, 60, 40);
+
+        nombretipo2.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombretipo2);
+        nombretipo2.setBounds(815, 556, 60, 40);
+
+        preEvolucion.setText("preEvolucion");
+        getContentPane().add(preEvolucion);
+        preEvolucion.setBounds(530, 440, 90, 16);
+
+        posEvolucion.setText("posEvolucion");
+        getContentPane().add(posEvolucion);
+        posEvolucion.setBounds(655, 440, 90, 16);
+
+        nombrePre.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombrePre);
+        nombrePre.setBounds(535, 466, 80, 50);
+
+        nombrePos.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombrePos);
+        nombrePos.setBounds(660, 460, 90, 50);
+
+        movimientos.setText("movimientos");
+        getContentPane().add(movimientos);
+        movimientos.setBounds(530, 180, 90, 16);
+
+        uno.setText("1");
+        getContentPane().add(uno);
+        uno.setBounds(510, 200, 20, 16);
+
+        dos.setText("2");
+        getContentPane().add(dos);
+        dos.setBounds(510, 240, 20, 16);
+
+        tres.setText("3");
+        getContentPane().add(tres);
+        tres.setBounds(510, 290, 20, 16);
+
+        nombreuno.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombreuno);
+        nombreuno.setBounds(535, 200, 90, 20);
+
+        nombredos.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombredos);
+        nombredos.setBounds(535, 240, 90, 20);
+
+        nombretres.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombretres);
+        nombretres.setBounds(535, 280, 90, 20);
+
+        nombredescripcion.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(nombredescripcion);
+        nombredescripcion.setBounds(545, 336, 320, 80);
+
+        descripcion.setText("Descripcion");
+        getContentPane().add(descripcion);
+        descripcion.setBounds(540, 310, 80, 16);
+
+        fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pokedex2.jpg"))); // NOI18N
+        getContentPane().add(fondo);
+        fondo.setBounds(0, 0, 950, 650);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void botonizquierdaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonizquierdaActionPerformed
+        contador--;
+        if (contador <= 0) {
+            contador = 1;
+        }
+        dibujaElPokemonQueEstaEnLaPosicion(contador);
+    }//GEN-LAST:event_botonizquierdaActionPerformed
+
+    private void botonderechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonderechaActionPerformed
+        dibujaElPokemonQueEstaEnLaPosicion(contador);
+
+        try {
+            resultadoConsulta = estado.executeQuery("select * from pokemon where id=" + (contador + 1));
+            if (resultadoConsulta.next()) {
+                nombrePokemon.setText(resultadoConsulta.getString(2));
+                nombrealtura.setText(resultadoConsulta.getString(3));
+                nombrepeso.setText(resultadoConsulta.getString(4));
+                nombretipo1.setText(resultadoConsulta.getString(7));
+                nombretipo2.setText(resultadoConsulta.getString(8));
+                nombrePre.setText(resultadoConsulta.getString(14));
+                nombrePos.setText(resultadoConsulta.getString(15));
+                nombreuno.setText(resultadoConsulta.getString(10));
+                nombredos.setText(resultadoConsulta.getString(11));
+                nombretres.setText(resultadoConsulta.getString(12));
+                nombredescripcion.setText(resultadoConsulta.getString(16));
+
+            } else {
+                nombrePokemon.setText("Este pokemon no figura en la pokedex");
+                nombrealtura.setText("Este pokemon no figura en la pokedex");
+                nombrepeso.setText("Este pokemon no figura en la pokedex");
+                nombretipo1.setText("Este pokemon no figura en la pokedex");
+                nombretipo2.setText("Este pokemon no figura en la pokedex");
+                nombrePre.setText("Este pokemon no figura en la pokedex");
+                nombrePos.setText("Este pokemon no figura en la pokedex");
+                nombreuno.setText("Este pokemon no figura en la pokedex");
+                nombredos.setText("Este pokemon no figura en la pokedex");
+                nombretres.setText("Este pokemon no figura en la pokedex");
+                nombredescripcion.setText("Este pokemon no figura en la pokedex");
+            }
+        } catch (SQLException ex) {
+        }
+        contador++;
+        if (contador >= 649) {
+            contador = 649;
+        }
+    }//GEN-LAST:event_botonderechaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -73,11 +336,42 @@ public class VentanaPokedex extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VentanaPokedex().setVisible(true);
+                try {
+                    new VentanaPokedex().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(VentanaPokedex.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel altura;
+    private javax.swing.JButton botonderecha;
+    private javax.swing.JButton botonizquierda;
+    private javax.swing.JLabel descripcion;
+    private javax.swing.JLabel dos;
+    private javax.swing.JLabel fondo;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel movimientos;
+    private javax.swing.JLabel nombrePokemon;
+    private javax.swing.JLabel nombrePos;
+    private javax.swing.JLabel nombrePre;
+    private javax.swing.JLabel nombrealtura;
+    private javax.swing.JLabel nombredescripcion;
+    private javax.swing.JLabel nombredos;
+    private javax.swing.JLabel nombrepeso;
+    private javax.swing.JLabel nombretipo1;
+    private javax.swing.JLabel nombretipo2;
+    private javax.swing.JLabel nombretres;
+    private javax.swing.JLabel nombreuno;
+    private javax.swing.JLabel peso;
+    private javax.swing.JLabel posEvolucion;
+    private javax.swing.JLabel preEvolucion;
+    private javax.swing.JLabel tipo1;
+    private javax.swing.JLabel tipo2;
+    private javax.swing.JLabel tres;
+    private javax.swing.JLabel uno;
     // End of variables declaration//GEN-END:variables
+
 }
